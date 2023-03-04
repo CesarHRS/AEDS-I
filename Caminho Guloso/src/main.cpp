@@ -34,6 +34,61 @@ void mostrarMatriz(vector<vector<int>> matriz) {
     cout << endl << "-----" << endl;
 };
 
+void verifyRight(vector<vector<int>> matriz, int tam, int l, int c, int* auxl,
+                 int* auxc, int* valor) {
+    if (c + 1 != tam) {
+        if (matriz[l][c + 1] != -1 && *valor <= matriz[l][c + 1]) {
+            *valor = matriz[l][c + 1];
+            *auxl = l;
+            *auxc = c + 1;
+        }
+    }
+}
+
+void verifyRightDiagonal(vector<vector<int>> matriz, int tam, int l, int c,
+                         int* auxl, int* auxc, int* valor) {
+    if (l + 1 != tam && c + 1 != tam) {
+        if (matriz[l + 1][c + 1] != -1 && *valor <= matriz[l + 1][c + 1]) {
+            *valor = matriz[l + 1][c + 1];
+            *auxl = l + 1;
+            *auxc = c + 1;
+        }
+    }
+}
+
+void verifyBottom(vector<vector<int>> matriz, int tam, int l, int c, int* auxl,
+                  int* auxc, int* valor) {
+    if (l + 1 != (tam)) {
+        if (matriz[l + 1][c] != -1 && *valor <= matriz[l + 1][c]) {
+            *valor = matriz[l + 1][c];
+            *auxl = l + 1;
+            *auxc = c;
+        }
+    }
+}
+
+void verifyLeftDiagonal(vector<vector<int>> matriz, int tam, int l, int c,
+                        int* auxl, int* auxc, int* valor) {
+    if (l + 1 != tam && c - 1 >= 0) {
+        if (matriz[l + 1][c - 1] != -1 && *valor <= matriz[l + 1][c - 1]) {
+            *valor = matriz[l + 1][c - 1];
+            *auxl = l + 1;
+            *auxc = c - 1;
+        }
+    }
+}
+
+void verifyLeft(vector<vector<int>> matriz, int tam, int l, int c, int* auxl,
+                int* auxc, int* valor) {
+    if (c - 1 >= 0 && l != tam - 1) {
+        if (matriz[l][c - 1] != -1 && *valor <= matriz[l][c - 1]) {
+            *valor = matriz[l][c - 1];
+            *auxl = l;
+            *auxc = c - 1;
+        }
+    }
+}
+
 int main() {
     int n;  // Número de matrizes
     cin >> n;
@@ -55,52 +110,11 @@ int main() {
 
             cout << matriz[l][c] << " ";
 
-            // verificar direita
-            if (c + 1 != tam) {
-                if (matriz[l][c + 1] != -1 && valor < matriz[l][c + 1]) {
-                    valor = matriz[l][c + 1];
-                    auxl = l;
-                    auxc = c + 1;
-                }
-            }
-
-            // verificar diagonal direita
-            if (l + 1 != tam && c + 1 != tam) {
-                if (matriz[l + 1][c + 1] != -1 &&
-                    valor < matriz[l + 1][c + 1]) {
-                    valor = matriz[l + 1][c + 1];
-                    auxl = l + 1;
-                    auxc = c + 1;
-                }
-            }
-
-            // verificar baixo
-            if (l + 1 != (tam)) {
-                if (matriz[l + 1][c] != -1 && valor < matriz[l + 1][c]) {
-                    valor = matriz[l + 1][c];
-                    auxl = l + 1;
-                    auxc = c;
-                }
-            }
-
-            // verificar diagonal esquerda
-            if (l + 1 != tam && c - 1 >= 0) {
-                if (matriz[l + 1][c - 1] != -1 &&
-                    valor < matriz[l + 1][c - 1]) {
-                    valor = matriz[l + 1][c - 1];
-                    auxl = l + 1;
-                    auxc = c - 1;
-                }
-            }
-
-            // verificar esquerda
-            if (c - 1 >= 0 && l != tam - 1) {
-                if (matriz[l][c - 1] != -1 && valor < matriz[l][c - 1]) {
-                    valor = matriz[l][c - 1];
-                    auxl = l;
-                    auxc = c - 1;
-                }
-            }
+            verifyLeft(matriz, tam, l, c, &auxl, &auxc, &valor);
+            verifyLeftDiagonal(matriz, tam, l, c, &auxl, &auxc, &valor);
+            verifyBottom(matriz, tam, l, c, &auxl, &auxc, &valor);
+            verifyRight(matriz, tam, l, c, &auxl, &auxc, &valor);
+            verifyRightDiagonal(matriz, tam, l, c, &auxl, &auxc, &valor);
 
             matriz[l][c] = -1;
 
