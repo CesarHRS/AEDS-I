@@ -53,7 +53,7 @@ void Matrix::solve(int initialLine, int initialColumn) {
 
     auxSum += matrix[line][column];
 
-    cout << " = " << auxSum << endl;
+    cout << " = " << auxSum << endl << endl;
 }
 
 void Matrix::verifyRight() {
