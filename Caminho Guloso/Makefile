@@ -37,5 +37,5 @@ clean:
 	-@rm -rvf $(APP_DIR)/*
 	
 run:
-	./$(BUILD)/$(TARGET) < src/matrizes.txt
+	./$(BUILD)/$(TARGET) 
 	
