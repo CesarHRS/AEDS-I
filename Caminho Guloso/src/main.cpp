@@ -7,7 +7,6 @@
 using namespace std;
 
 int main() {
-
     FILE* file = fopen("matrizes.txt", "r");
 
     if (file == nullptr) {
@@ -15,21 +14,19 @@ int main() {
         exit(-1);
     }
 
-    int n;  // Número de matrizes
-    fscanf(file, "%d", &n);
+    int lines;  // Number of lines
+    fscanf(file, "%d", &lines);
 
-    int tam;  // Tamanho da matriz, l por l
-    fscanf(file, "%d", &tam);
+    int columns;  // Number of columns
+    fscanf(file, "%d", &columns);
 
-    while (n--) {
-        Matrix matrix(tam);
+    Matrix matrix(lines, columns);
 
-        //matrix.readFromStdin();
+    while (!feof(file)) {
         matrix.readFromFile(file);
 
         matrix.solve(0, 0);
         matrix.show();
-
     }
 
     fclose(file);

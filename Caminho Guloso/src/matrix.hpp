@@ -2,15 +2,16 @@
 #define MATRIX_HPP
 
 #include <stdlib.h>
-#include <iostream>
 
+#include <iostream>
 #include <vector>
 
 using namespace std;
 
 class Matrix {
    private:
-    int tam;  // Tamanho da matriz
+    int lines;
+    int columns;
     vector<vector<int>> matrix;
 
     int line;
@@ -28,11 +29,11 @@ class Matrix {
     void verifyRightDiagonal();
 
    public:
-    Matrix(int tam);
+    Matrix(int tam);  // Matrix quadratic
+    Matrix(int lines, int columns);
 
     void show();
     void readFromFile(FILE* file);
-    void readFromStdin();
     void solve(int initialLine, int initialColumn);
 };
 
