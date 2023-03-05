@@ -23,13 +23,17 @@ void Matrix::solve(int initialLine, int initialColumn) {
 
     auxl = 0;
     auxc = 0;
-    auxValue = 0;
+    
+    auxSum = 0;
 
     line = initialLine;
     column = initialColumn;
 
     while (line != lines - 1 || column != columns - 1) {
-        cout << matrix[line][column] << " ";
+    
+        cout << matrix[line][column] << " + ";
+
+        auxValue = 0;
 
         verifyLeft();
         verifyLeftDiagonal();
@@ -37,6 +41,7 @@ void Matrix::solve(int initialLine, int initialColumn) {
         verifyRight();
         verifyRightDiagonal();
 
+        auxSum += matrix[line][column];
         matrix[line][column] = -1;
 
         line = auxl;
@@ -44,7 +49,11 @@ void Matrix::solve(int initialLine, int initialColumn) {
     }
 
     // Mostrando ultima posicao
-    cout << matrix[line][column] << endl;
+    cout << matrix[line][column];
+
+    auxSum += matrix[line][column];
+
+    cout << " = " << auxSum << endl;
 }
 
 void Matrix::verifyRight() {

@@ -26,7 +26,7 @@ int main() {
         matrix.readFromFile(file);
 
         matrix.solve(0, 0);
-        matrix.show();
+        //matrix.show();
     }
 
     fclose(file);

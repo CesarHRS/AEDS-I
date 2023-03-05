@@ -20,7 +20,8 @@ class Matrix {
     int auxl;
     int auxc;
 
-    int auxValue = 0;
+    int auxValue;
+    int auxSum;
 
     void verifyLeft();
     void verifyLeftDiagonal();
