@@ -22,12 +22,20 @@ int main() {
 
     Matrix matrix(lines, columns);
 
+    int count = 1;
+    int allSum = 0;
+
     while (!feof(file)) {
+        cout << "Matriz " << count << ": ";
+
         matrix.readFromFile(file);
 
-        matrix.solve(0, 0);
-        //matrix.show();
+        allSum += matrix.solve(0, 0);
+        // matrix.show();
+        count++;
     }
+
+    cout << "Soma total: " << allSum << endl;
 
     fclose(file);
     return 0;

@@ -10,7 +10,7 @@ Matrix::Matrix(int lines, int columns) {
     this->columns = columns;
 }
 
-void Matrix::solve(int initialLine, int initialColumn) {
+int Matrix::solve(int initialLine, int initialColumn) {
     if (initialLine < 0 || initialLine > lines - 1) {
         cout << "Invalid inital line value!\n";
         exit(-1);
@@ -54,6 +54,7 @@ void Matrix::solve(int initialLine, int initialColumn) {
     auxSum += matrix[line][column];
 
     cout << " = " << auxSum << endl << endl;
+    return auxSum;
 }
 
 void Matrix::verifyRight() {
