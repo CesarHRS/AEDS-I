@@ -17,17 +17,15 @@ class Matrix {
     int line;
     int column;
 
-    int auxl;
-    int auxc;
-
-    int auxValue;
     int auxSum;
 
-    void verifyLeft();
-    void verifyLeftDiagonal();
-    void verifyBottom();
-    void verifyRight();
-    void verifyRightDiagonal();
+    pair<int, int> bestMove();
+
+    void verifyLeft(int* auxl, int* auxc, int* auxValue);
+    void verifyLeftDiagonal(int* auxl, int* auxc, int* auxValue);
+    void verifyBottom(int* auxl, int* auxc, int* auxValue);
+    void verifyRight(int* auxl, int* auxc, int* auxValue);
+    void verifyRightDiagonal(int* auxl, int* auxc, int* auxValue);
 
    public:
     Matrix(int tam);  // Matrix quadratic
@@ -35,7 +33,7 @@ class Matrix {
 
     void show();
     void readFromFile(FILE* file);
-    void solve(int initialLine, int initialColumn);
+    int solve(int initialLine, int initialColumn);
 };
 
 #endif
