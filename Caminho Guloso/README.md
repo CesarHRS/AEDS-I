@@ -61,26 +61,6 @@ A posição inicial é lida a partir de um arquivo de configuração (config.va)
 
 Obs: As linhas e colunas são contadas a partir do 0. Por exemplo, a primeira possível da matriz é a posição $a_{00}$;
 
-### Exemplo:
-```
-4 4
-1 2 3 4
-4 3 2 1
-1 2 3 4
-4 3 2 1
-
-1 1 1 1
-1 1 1 1
-1 1 1 1
-1 1 1 1
-
-1 6 6 8
-7 8 7 7
-7 7 7 6
-2 3 4 5
-```
-
-<br>
 <br>
 
 ## Exemplos de Saída
