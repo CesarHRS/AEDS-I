@@ -31,7 +31,7 @@ int main() {
         matrix.readFromFile(file);
 
         allSum += matrix.solve(0, 0);
-        // matrix.show();
+     
         count++;
     }
 
