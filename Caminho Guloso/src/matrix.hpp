@@ -6,18 +6,22 @@
 #include <iostream>
 #include <vector>
 
+#include "file.hpp"
+
 using namespace std;
 
 class Matrix {
    private:
-    int lines;
-    int columns;
-    vector<vector<int>> matrix;
+    int lines; // Number of lines
+    int columns; // Number of columns
+    int matrixCount; // Index of actual matrix
+    vector<vector<int>> matrix; // Actual matrix
 
-    int line;
-    int column;
+    int line; // Actual line
+    int column; // Actual column
 
-    int auxSum;
+    int auxSum; // Sum of actual matrix
+    int totalSum; // Sum of all matrix
 
     pair<int, int> bestMove();
 
@@ -28,12 +32,21 @@ class Matrix {
     void verifyRightDiagonal(int* auxl, int* auxc, int* auxValue);
 
    public:
-    Matrix(int tam);  // Matrix quadratic
-    Matrix(int lines, int columns);
+    Matrix();
+    Matrix(string filename);
+
+    ~Matrix();
+
+    FILE* file;
 
     void show();
-    void readFromFile(FILE* file);
-    int solve(int initialLine, int initialColumn);
+
+    void readLinesAndColums();
+    void readNextMatrix();
+    void solve(int* initialLine, int* initialColumn);
+
+    void printMatrixIndex();
+    void printTotalSum();
 };
 
 #endif

@@ -1,14 +1,41 @@
 #include "matrix.hpp"
 
-Matrix::Matrix(int tam) {
-    this->lines = tam;
-    this->columns = tam;
+Matrix::Matrix() {
+    this->lines = 0;
+    this->columns = 0;
+
+    this->auxSum = 0;
+    this->totalSum = 0;
+
+    this->matrixCount = 0;
 }
 
-Matrix::Matrix(int lines, int columns) {
-    this->lines = lines;
-    this->columns = columns;
+Matrix::Matrix(string filename) {
+
+    this->file = fopen(filename.c_str(), "r");
+
+    this->lines = 0;
+    this->columns = 0;
+
+    this->auxSum = 0;
+    this->totalSum = 0;
+
+    this->matrixCount = 0;
 }
+
+Matrix::~Matrix() {
+    fclose(this->file);
+}
+
+void Matrix::readLinesAndColums() {
+    File::readLinesAndColumns(file, &lines, &columns);
+}
+
+void Matrix::printMatrixIndex() {
+    cout << "Matriz " << this->matrixCount << ": ";
+}
+
+void Matrix::printTotalSum() { cout << "Soma total: " << totalSum << endl; }
 
 pair<int, int> Matrix::bestMove() {
     int auxValue = 0;
@@ -29,21 +56,21 @@ pair<int, int> Matrix::bestMove() {
     return move;
 }
 
-int Matrix::solve(int initialLine, int initialColumn) {
-    if (initialLine < 0 || initialLine > lines - 1) {
+void Matrix::solve(int* initialLine, int* initialColumn) {
+    if (*initialLine < 0 || *initialLine > lines - 1) {
         cout << "Invalid inital line value!\n";
         exit(-1);
     }
 
-    if (initialColumn < 0 || initialColumn > columns - 1) {
+    if (*initialColumn < 0 || *initialColumn > columns - 1) {
         cout << "Invalid inital column value!\n";
         exit(-1);
     }
 
     auxSum = 0;
 
-    line = initialLine;
-    column = initialColumn;
+    line = *initialLine;
+    column = *initialColumn;
 
     while (line != lines - 1 || column != columns - 1) {
         cout << matrix[line][column] << " + ";
@@ -63,7 +90,8 @@ int Matrix::solve(int initialLine, int initialColumn) {
     auxSum += matrix[line][column];
 
     cout << " = " << auxSum << endl << endl;
-    return auxSum;
+
+    this->totalSum += auxSum;
 }
 
 void Matrix::verifyRight(int* auxl, int* auxc, int* auxValue) {
@@ -135,18 +163,10 @@ void Matrix::show() {
     cout << endl << "-----" << endl;
 };
 
-void Matrix::readFromFile(FILE* file) {
+void Matrix::readNextMatrix() {
     matrix.clear();
 
-    for (int i = 0; i < lines; i++) {
-        vector<int> line;
+    File::readMatrix(file, &matrix, &lines, &columns);
 
-        for (int j = 0; j < columns; j++) {
-            int num;
-            fscanf(file, "%d", &num);
-            line.push_back(num);
-        }
-
-        matrix.push_back(line);
-    }
+    this->matrixCount++;
 }
