@@ -70,12 +70,12 @@ O código foi organizado com duas classes principais:
  e 
  [Matrix](https://github.com/tinicius/AEDS-I/blob/main/Caminho%20Guloso/src/matrix.hpp).
 
-A classe file agrupa todas as operações com arquivos externos utilizadas dentro do projeto.
+A classe File agrupa todas as operações com arquivos externos utilizadas dentro do projeto.
 Foram utilizados os métodos 
 [fopen](https://learn.microsoft.com/pt-br/cpp/c-runtime-library/reference/fopen-wfopen), 
 [fscanf](https://learn.microsoft.com/pt-br/cpp/c-runtime-library/reference/fscanf-fscanf-l-fwscanf-fwscanf-l) e [fclose](https://learn.microsoft.com/pt-br/cpp/c-runtime-library/reference/fclose-fcloseall?).
 
-A classe Matrix reúne reune todas informações para trabalhar com a matriz ao longo do problema.
+A classe Matrix reúne todas informações para trabalhar com a matriz ao longo do problema.
 
 Foram utilizadas da biblioteca std as estruturas [vector](https://cplusplus.com/reference/vector/vector/) e [pair](https://cplusplus.com/reference/utility/pair/).
 
