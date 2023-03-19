@@ -71,13 +71,15 @@ O código foi organizado com duas classes principais:
  [Matrix](https://github.com/tinicius/AEDS-I/blob/main/Caminho%20Guloso/src/matrix.hpp).
 
 A classe file agrupa todas as operações com arquivos externos utilizadas dentro do projeto.
-Foram utilizados os métodos fopen, fscanf e fclose.
+Foram utilizados os métodos 
+[fopen](https://learn.microsoft.com/pt-br/cpp/c-runtime-library/reference/fopen-wfopen), 
+[fscanf](https://learn.microsoft.com/pt-br/cpp/c-runtime-library/reference/fscanf-fscanf-l-fwscanf-fwscanf-l) e [fclose](https://learn.microsoft.com/pt-br/cpp/c-runtime-library/reference/fclose-fcloseall?).
 
 A classe Matrix reúne reune todas informações para trabalhar com a matriz ao longo do problema.
 
-Foram utilizadas da biblioteca std as estruturas vector e pair.
+Foram utilizadas da biblioteca std as estruturas [vector](https://cplusplus.com/reference/vector/vector/) e [pair](https://cplusplus.com/reference/utility/pair/).
 
-A principal lógica do código está na função Matrix.solve(). Dentro dela existe um loop que é executado enquanto não atingirmos a possível desejada. Nesse caso a última posição da matriz. Em cada iteração a função Matrix.bestMove() calcula qual o melhor passo para andar. 
+A principal lógica do código está na função [Matrix.solve()](https://github.com/tinicius/AEDS-I/blob/ae3ca34b99986f4a330e7851e9c4b0097f1d842c/Caminho%20Guloso/src/matrix.cpp#L60-L96). Dentro dela existe um loop que é executado enquanto não atingirmos a possível desejada. Nesse caso a última posição da matriz. Em cada iteração a função [Matrix.bestMove()](https://github.com/tinicius/AEDS-I/blob/ae3ca34b99986f4a330e7851e9c4b0097f1d842c/Caminho%20Guloso/src/matrix.cpp#L41-L58) calcula qual o melhor passo para andar. 
 
 Para calcular o melhor caminho utilizamos uma variável inteira auxiliar chamada auxValue, iniciada em 0, e um pair, chamado move, para marcar uma posição. Para cada casa adjacente, dentro das permitidas acessar, veriaficamos se seu valor é maior que está salvo em auxValue. Como a várival é inicializada em 0, o valor da primeira comparação é salvo. Como a ordem de comparação é o inverso da ordem de prioridade, caso a segunda comparação apresente o mesmo valor esse é salvo na variável. Sempre que atualizamos auxValue, também salvamos a posição no nosso par move.
 
