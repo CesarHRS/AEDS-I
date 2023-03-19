@@ -5,9 +5,13 @@
 #include "file.hpp"
 #include "matrix.hpp"
 
+#include <chrono>
+
+
 using namespace std;
 
 int main() {
+
     int initialLine, initialColumn;
     File::readInitialPosition("config.va", &initialLine, &initialColumn);
 
@@ -15,7 +19,7 @@ int main() {
 
     matrix.readLinesAndColums();
 
-    while (!feof(matrix.file)) {
+    while (matrix.isFileOpen()) {
         matrix.printMatrixIndex();
 
         matrix.readNextMatrix();

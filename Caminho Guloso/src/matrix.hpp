@@ -41,6 +41,8 @@ class Matrix {
 
     void show();
 
+    bool isFileOpen();
+
     void readLinesAndColums();
     void readNextMatrix();
     void solve(int* initialLine, int* initialColumn);

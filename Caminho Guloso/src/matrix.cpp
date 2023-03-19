@@ -11,7 +11,6 @@ Matrix::Matrix() {
 }
 
 Matrix::Matrix(string filename) {
-
     this->file = fopen(filename.c_str(), "r");
 
     this->lines = 0;
@@ -23,8 +22,10 @@ Matrix::Matrix(string filename) {
     this->matrixCount = 0;
 }
 
-Matrix::~Matrix() {
-    fclose(this->file);
+Matrix::~Matrix() { fclose(this->file); }
+
+bool Matrix::isFileOpen() {
+    return !feof(this->file);
 }
 
 void Matrix::readLinesAndColums() {
