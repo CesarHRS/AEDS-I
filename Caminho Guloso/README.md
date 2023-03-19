@@ -65,7 +65,10 @@ Obs: As linhas e colunas são contadas a partir do 0. Por exemplo, a primeira po
 
 ## Implementação
 
-O código foi organizado com duas classes principais: File e Matrix.
+O código foi organizado com duas classes principais: 
+[File](https://github.com/tinicius/AEDS-I/blob/main/Caminho%20Guloso/src/file.hpp)
+ e 
+ [Matrix](https://github.com/tinicius/AEDS-I/blob/main/Caminho%20Guloso/src/matrix.hpp).
 
 A classe file agrupa todas as operações com arquivos externos utilizadas dentro do projeto.
 Foram utilizados os métodos fopen, fscanf e fclose.
@@ -74,9 +77,9 @@ A classe Matrix reúne reune todas informações para trabalhar com a matriz ao 
 
 Foram utilizadas da biblioteca std as estruturas vector e pair.
 
-A principal lógica do código está na função Matrix.solve(). Dentro dela existe uma iteração que é executa enquanto não atingirmos a possível desejada. Nesse caso a última posição da matriz. Em cada iteração a função Matrix.bestMove() calcula qual o melhor passo para andar. 
+A principal lógica do código está na função Matrix.solve(). Dentro dela existe um loop que é executado enquanto não atingirmos a possível desejada. Nesse caso a última posição da matriz. Em cada iteração a função Matrix.bestMove() calcula qual o melhor passo para andar. 
 
-Para calcular o melhor caminho utilizamos uma variavel auxiliar auxValue, iniciada em 0, e um pair move para marcar uma posição. Para cada cada adjacente, dentro das permitida acessar, veriaficamos se seu valor é maior que está salvo em auxValue. Como a várival é inicilizada em 0, o valor da primeira comparação é salvo. Como a ordem de comparação é executado ao inverso da ordem de prioridade, caso a segunda comparação apresente o mesmo valor esse é salvo na variável. Sempre que atualizamos auxValue, também salvamos a posição no nosso par move.
+Para calcular o melhor caminho utilizamos uma variável inteira auxiliar chamada auxValue, iniciada em 0, e um pair, chamado move, para marcar uma posição. Para cada casa adjacente, dentro das permitidas acessar, veriaficamos se seu valor é maior que está salvo em auxValue. Como a várival é inicializada em 0, o valor da primeira comparação é salvo. Como a ordem de comparação é o inverso da ordem de prioridade, caso a segunda comparação apresente o mesmo valor esse é salvo na variável. Sempre que atualizamos auxValue, também salvamos a posição no nosso par move.
 
 Esse par (move) representa o movimento que iremos realizar, ao fim da função bestMove.
 
@@ -128,7 +131,7 @@ auxValue = 6
 move = {2, 2}
 ```
 
-Observe que movimento foi sendo substituido e no final aprensentou a posição que tem maior prioridade, a diagonal direita.
+Observe que movimento foi sendo substituído e no final aprensentou a posição que tem maior prioridade, a diagonal direita.
 
 
 ## Exemplos de Saída
