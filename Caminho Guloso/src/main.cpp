@@ -7,7 +7,7 @@
 using namespace std;
 
 pair<int, int> readInitialPosition() {
-    FILE* file = fopen("../config.va", "r");
+    FILE* file = fopen("config.va", "r");
 
     if (file == nullptr) {
         return {0, 0};
