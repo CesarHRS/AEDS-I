@@ -4,6 +4,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#define dbg(x) cout << #x << " = " << x << endl
 
 using namespace std;
 
@@ -53,7 +54,14 @@ int randomInteger(int min, int max) {
 
     return dis(gen);
 }
+void show(vector<vector<string>> matrix, int lines, int columns) {
+    for (int i = 0; i < lines; i++) {
+        for (int j = 0; j < columns; j++) cout << matrix[i][j] << " ";
+        cout << endl;
+    }
 
+    cout << endl << "-----" << endl;
+};
 vector<vector<string>> loadMatrixFromFile(int matrixIndex, int lines,
                                           int columns) {
     ifstream file;
@@ -81,7 +89,7 @@ vector<vector<string>> loadMatrixFromFile(int matrixIndex, int lines,
     return matrix;
 }
 
-pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
+pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
                           int lines, int columns) {
     // TODO
 
@@ -94,17 +102,16 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
     // 7 - Baixo
     // 8 - Diagonal inferior direita
 
-    int move = randomInteger(1, 8);
-
-    pair<int, int> newPosition;
+    pair<int, int> newPosition = {-1, -1};
 
     do {
+        int move = randomInteger(1, 8);
         switch (move) {
             case 1:
 
                 if (line - 1 < 0 || column - 1 < 0) {
                     // limite da matriz
-                    newPosition = {0, 0};
+                    return randomMove(matrix, line, column, lines, columns);
                 } else {
                     newPosition = {line - 1, column - 1};
                 }
@@ -114,7 +121,7 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
 
                 if (line - 1 < 0) {
                     // Limite da matriz
-                    newPosition = {0, 0};
+                    return randomMove(matrix, line, column, lines, columns);
                 } else {
                     newPosition = {line - 1, column};
                 }
@@ -124,7 +131,7 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
 
                 if (line - 1 < 0 || column + 1 > (columns - 1)) {
                     // Limite da matriz
-                    newPosition = {0, 0};
+                    return randomMove(matrix, line, column, lines, columns);
                 } else {
                     newPosition = {line - 1, column + 1};
                 }
@@ -134,7 +141,7 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
 
                 if (column - 1 < 0) {
                     // Limite da matriz
-                    newPosition = {0, 0};
+                    return randomMove(matrix, line, column, lines, columns);
                 } else {
                     newPosition = {line, column - 1};
                 }
@@ -144,7 +151,7 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
 
                 if (column + 1 > (columns - 1)) {
                     // Limite da matriz
-                    newPosition = {0, 0};
+                    return randomMove(matrix, line, column, lines, columns);
                 } else {
                     newPosition = {line, column + 1};
                 }
@@ -154,33 +161,33 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
 
                 if (line + 1 > (lines - 1) || column - 1 < 0) {
                     // Limite da matriz
-                    newPosition = {0, 0};
+                    return randomMove(matrix, line, column, lines, columns);
                 } else {
-                    return {line + 1, column - 1};
+                    newPosition = {line + 1, column - 1};
                 }
 
                 break;
             case 7:
                 if (line + 1 > (lines - 1)) {
                     // Limite da matriz
-                    newPosition = {0, 0};
+                    return randomMove(matrix, line, column, lines, columns);
                 } else {
-                    return {line + 1, column};
+                    newPosition = {line + 1, column};
                 }
 
                 break;
             case 8:
                 if (line + 1 > (lines - 1) || column + 1 > (columns - 1)) {
                     // Limite da matriz
-                    newPosition = {0, 0};
+                    return randomMove(matrix, line, column, lines, columns);
                 } else {
-                    return {line + 1, column + 1};
+                    newPosition = {line + 1, column + 1};
                 }
 
                 break;
         }
 
-    } while ((*matrix)[newPosition.first][newPosition.second] != "#");
+    } while (matrix[newPosition.first][newPosition.second] == "#");
 
     return newPosition;
 }
@@ -213,15 +220,25 @@ int main() {
     vector<vector<string>> matrix;
     matrix = loadMatrixFromFile(initialMatrix, lines, columns);
 
-    while (life >= 10) {
+    show(matrix, lines, columns);
+
+    while (life > 0) {
+        pair<int, int> nextMove =
+            randomMove(matrix, line, column, lines, columns);
+
+        // dbg(nextMove.first);
+        // dbg(nextMove.second);
+
+        line = nextMove.first;
+        column = nextMove.second;
 
         cout << line << column << " ";
 
-        pair<int, int> nextMove =
-            randomMove(&matrix, line, column, lines, columns);
-
-        line = nextMove.first;
-        columns = nextMove.second;
+        // if (line == startPosition.first && column == startPosition.second &&
+        //            bag == 0) {
+        //     dbg("EU QUERTO CAFE");
+        //     break;
+        // }
 
         string position = matrix[line][column];
 
@@ -230,14 +247,15 @@ int main() {
 
             life--;
         } else {
-            // Como a função randomMove não retorna uma posição que seja parede
+            // Como a função randomMove não retorna uma posição que seja
+            // parede
             // (#) caso a posição não seja um perigo (*) ela vai ser um item
             // (1-10).
 
             int item = stoi(position);
 
             if (item != 0) {
-                matrix[line][column] = item - 1;
+                matrix[line][column] = to_string(item - 1);
                 bag++;
 
                 if (bag == 4) {
@@ -246,9 +264,9 @@ int main() {
                 }
             }
         }
-
-        life --;
     }
+cout << endl;
+    show(matrix, lines, columns);
 
     return 0;
 }
