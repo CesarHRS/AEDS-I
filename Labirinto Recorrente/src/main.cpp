@@ -167,9 +167,7 @@ pair<int, int> teleportNext(int* matrixIndex, vector<vector<string>>* matrix,
     } else {
         // Case is not possible back, try go to first matrix
 
-        // If you are already on first, is not necessary change the matrix
-        if (*matrixIndex != 1)
-            changeMatrix(matrix, matrixIndex, 1, lines, columns);
+        changeMatrix(matrix, matrixIndex, 1, lines, columns);
 
         int index = randomInteger(0, (*validPositions)[0].size() - 1);
 
@@ -345,6 +343,85 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
     return newPosition;
 }
 
+bool verifyStartPosition(pair<int, int> startPosition,
+                         vector<vector<string>>* matrix, int lines,
+                         int columns) {
+    int line = startPosition.first;
+    int column = startPosition.second;
+
+    if ((*matrix)[line][column] == "#") {
+        return false;
+    }
+
+    bool canMoveUpperLeftDiag, canMoveUpper, canMoveUpperRightDiag;
+    bool canMoveleft, canMoveRight;
+    bool canMoveBottomLeftDiag, canMoveBottom, canMoveBottomRightDiag;
+
+    bool isBorder = false;
+
+    if (line - 1 >= 0 && column - 1 >= 0) {
+        canMoveUpperLeftDiag = (*matrix)[line - 1][column - 1] != "#";
+    } else {
+        isBorder = true;
+    }
+
+    if (line - 1 >= 0) {
+        canMoveUpper = (*matrix)[line - 1][column] != "#";
+    } else {
+        isBorder = true;
+    }
+
+    if (line - 1 >= 0 && column + 1 <= (columns - 1)) {
+        canMoveUpperRightDiag = (*matrix)[line - 1][column + 1] != "#";
+    } else {
+        isBorder = true;
+    }
+
+    if (column - 1 >= 0) {
+        canMoveleft = (*matrix)[line][column - 1] != "#";
+    } else {
+        isBorder = true;
+    }
+
+    if (column + 1 <= (columns - 1)) {
+        canMoveRight = (*matrix)[line][column + 1] != "#";
+    } else {
+        isBorder = true;
+    }
+
+    if (line + 1 <= (lines - 1) && column - 1 >= 0) {
+        canMoveBottomLeftDiag = (*matrix)[line + 1][column - 1] != "#";
+    } else {
+        isBorder = true;
+    }
+
+    if (line + 1 <= (lines - 1)) {
+        canMoveBottom = (*matrix)[line + 1][column] != "#";
+    } else {
+        isBorder = true;
+    }
+
+    if (line + 1 <= (lines - 1) && column + 1 <= (columns - 1)) {
+        canMoveBottomRightDiag = (*matrix)[line + 1][column + 1] != "#";
+    } else {
+        isBorder = true;
+    }
+
+    // If you try teleport and have just 1 matrix,
+    // you will win one valid random position on the same matrix
+    // bool canTeleport = (numberOfMatrixs > 1) && isBorder;
+
+    bool canTeleport = isBorder;
+
+    if (canTeleport || canMoveUpperLeftDiag || canMoveUpper ||
+        canMoveUpperRightDiag || canMoveleft || canMoveRight ||
+        canMoveBottomLeftDiag || canMoveBottom || canMoveBottomRightDiag) {
+        return true;
+    }
+
+    return false;
+}
+
 int main() {
     ifstream file;
     file.open("matrizes.txt", ios::in);
@@ -365,8 +442,16 @@ int main() {
 
     // Play
 
-    pair<int, int> startPosition = {0, 0};
+    pair<int, int> startPosition = {1, 1};
     int matrixIndex = 1;
+
+    vector<vector<string>> matrix =
+        loadMatrixFromFile(matrixIndex, lines, columns);
+
+    if (!verifyStartPosition(startPosition, &matrix, lines, columns)) {
+        cout << "Posição inicial inválida!" << endl;
+        return 1;
+    }
 
     int life = 10;
     int bag = 0;
@@ -374,14 +459,12 @@ int main() {
     int itemsCounter = 0;
     int numberOfExploitedPositions = 0;
     int dangersCounter = 0;
+    int allCollectedItems = 0;
 
     int line = startPosition.first;
     int column = startPosition.second;
 
     exploitedPositions[matrixIndex - 1].insert({line, column});
-
-    vector<vector<string>> matrix;
-    matrix = loadMatrixFromFile(matrixIndex, lines, columns);
 
     while (life > 0) {
         pair<int, int> nextMove =
@@ -395,15 +478,11 @@ int main() {
 
         exploitedPositions[matrixIndex - 1].insert({line, column});
 
-        cout << matrixIndex << " " << line << column << " " << endl;
-
         if (line == startPosition.first && column == startPosition.second) {
-            dbg(itemsCounter);
-            if (itemsCounter == 0) {
+            if (itemsCounter == 0)
                 break;
-            } else {
+            else
                 itemsCounter = 0;
-            }
         }
 
         string position = matrix[line][column];
@@ -424,7 +503,7 @@ int main() {
                 matrix[line][column] = to_string(item - 1);
                 bag++;
                 itemsCounter++;
-
+                allCollectedItems++;
                 if (bag == 4) {
                     bag = 0;
                     life++;
@@ -437,7 +516,8 @@ int main() {
 
     cout << "Casas percorridas ao todo: " << numberOfExploitedPositions << endl
          << endl;
-    cout << "Item consumidos pelo caminho: " << itemsCounter << endl << endl;
+    cout << "Item consumidos pelo caminho: " << allCollectedItems << endl
+         << endl;
 
     for (int i = 0; i < numberOfMatrixs; i++) {
         cout << "Matriz " << i + 1 << endl;
@@ -459,26 +539,6 @@ int main() {
     cout << "Perigos enfrentados: " << dangersCounter << endl;
 
     cout << "Vida ao final: " << life << endl;
-
-    // cout << endl << "Valid Postitions" << endl;
-
-    // for (auto positions : validPositions) {
-    //     cout << positions.size() << " ";
-    //     for (auto position : positions) {
-    //         cout << position.first << position.second << " ";
-    //     }
-    //     cout << endl;
-    // }
-
-    // cout << endl << "Exploited Postitions" << endl;
-
-    // for (auto positions : exploitedPositions) {
-    //     cout << positions.size() << " ";
-    //     for (auto position : positions) {
-    //         cout << position.first << position.second << " ";
-    //     }
-    //     cout << endl;
-    // }
 
     return 0;
 }
