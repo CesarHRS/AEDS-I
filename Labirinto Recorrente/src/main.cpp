@@ -25,6 +25,24 @@ string getMatrixFilename(int index) {
     return filename;
 }
 
+void saveMatrixOnFile(vector<vector<string>> matrix, int matrixIndex, int lines,
+                      int columns) {
+    string filename = getMatrixFilename(matrixIndex);
+
+    fstream matrixFile;
+    matrixFile.open(filename, ios::out);
+
+    for (int j = 0; j < lines; j++) {
+        for (int k = 0; k < columns; k++) {
+            matrixFile << matrix[j][k] << " ";
+        }
+
+        matrixFile << endl;
+    }
+
+    matrixFile.close();
+}
+
 void saveAllMatrixOnSeparateFiles(ifstream* file, int numberOfMatrixs,
                                   int lines, int columns) {
     for (int i = 0; i < numberOfMatrixs; i++) {
@@ -89,29 +107,81 @@ vector<vector<string>> loadMatrixFromFile(int matrixIndex, int lines,
     return matrix;
 }
 
-pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
-                          int lines, int columns) {
+void teleport(vector<vector<string>>* matrix, int* matrixIndex,
+              int newMatrixIndex, int lines, int columns) {
+    saveMatrixOnFile(*matrix, newMatrixIndex, lines, columns);
+
+    *matrixIndex = newMatrixIndex;
+
+    *matrix = loadMatrixFromFile(*matrixIndex, lines, columns);
+}
+
+pair<int, int> randomValidMove(vector<vector<string>>* matrix, int line,
+                               int column, int lines, int columns,
+                               int* matrixIndex, int numberOfMatrixs) {
+    int move = randomInteger(1, 8);
+}
+
+pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
+                          int lines, int columns, int* matrixIndex,
+                          int numberOfMatrixs) {
     // TODO
 
     // 1 - Diagonal superior esquerda
-    // 2 - Cima
-    // 3 - Diagonal superior direita
-    // 4 - Esquerda
-    // 5 - Direita
-    // 6 - Diagonal inferior esquerda
-    // 7 - Baixo
-    // 8 - Diagonal inferior direita
+    // Matriz anterior
 
-    pair<int, int> newPosition = {-1, -1};
+    // 2 - Cima
+    // Matriz anterior
+
+    // 3 - Diagonal superior direita
+    // Matriz anterior
+
+    // 4 - Esquerda
+    // Matriz anterior
+
+    // 5 - Direita
+    // Proxima matriz
+
+    // 6 - Diagonal inferior esquerda
+    // Proxima matriz
+
+    // 7 - Baixo
+    // Proxima matriz
+
+    // 8 - Diagonal inferior direita
+    // Proxima matriz
+
+    pair<int, int> newPosition = {line, column};
+
+    bool isSamePosition =
+        (newPosition.first == line) && (newPosition.second == column);
+
+    bool isPositionBlock =
+        (*matrix)[newPosition.first][newPosition.second] == "#";
 
     do {
         int move = randomInteger(1, 8);
+
         switch (move) {
             case 1:
 
                 if (line - 1 < 0 || column - 1 < 0) {
-                    // limite da matriz
-                    return randomMove(matrix, line, column, lines, columns);
+                    // Limite da matriz
+                    if (*matrixIndex - 1 > 0) {
+                        teleport(matrix, matrixIndex, *matrixIndex - 1, lines,
+                                 columns);
+
+                        int l = randomInteger(0, lines - 1);
+                        int c = randomInteger(0, columns - 1);
+
+                        while ((*matrix)[l][c] != "#") {
+                            l = randomInteger(0, lines - 1);
+                            c = randomInteger(0, columns - 1);
+                        }
+
+                        newPosition = {l, c};
+                    }
+
                 } else {
                     newPosition = {line - 1, column - 1};
                 }
@@ -121,7 +191,11 @@ pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
 
                 if (line - 1 < 0) {
                     // Limite da matriz
-                    return randomMove(matrix, line, column, lines, columns);
+                    if (*matrixIndex - 1 > 0) {
+                        newPosition = {0, 0};
+                        teleport(matrix, matrixIndex, *matrixIndex - 1, lines,
+                                 columns);
+                    }
                 } else {
                     newPosition = {line - 1, column};
                 }
@@ -131,7 +205,11 @@ pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
 
                 if (line - 1 < 0 || column + 1 > (columns - 1)) {
                     // Limite da matriz
-                    return randomMove(matrix, line, column, lines, columns);
+                    if (*matrixIndex - 1 > 0) {
+                        newPosition = {0, 0};
+                        teleport(matrix, matrixIndex, *matrixIndex - 1, lines,
+                                 columns);
+                    }
                 } else {
                     newPosition = {line - 1, column + 1};
                 }
@@ -141,7 +219,11 @@ pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
 
                 if (column - 1 < 0) {
                     // Limite da matriz
-                    return randomMove(matrix, line, column, lines, columns);
+                    if (*matrixIndex - 1 > 0) {
+                        newPosition = {0, 0};
+                        teleport(matrix, matrixIndex, *matrixIndex - 1, lines,
+                                 columns);
+                    }
                 } else {
                     newPosition = {line, column - 1};
                 }
@@ -151,7 +233,13 @@ pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
 
                 if (column + 1 > (columns - 1)) {
                     // Limite da matriz
-                    return randomMove(matrix, line, column, lines, columns);
+
+                    if (*matrixIndex + 1 <= numberOfMatrixs) {
+                        newPosition = {0, 0};
+                        teleport(matrix, matrixIndex, *matrixIndex + 1, lines,
+                                 columns);
+                    }
+
                 } else {
                     newPosition = {line, column + 1};
                 }
@@ -161,7 +249,13 @@ pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
 
                 if (line + 1 > (lines - 1) || column - 1 < 0) {
                     // Limite da matriz
-                    return randomMove(matrix, line, column, lines, columns);
+
+                    if (*matrixIndex + 1 <= numberOfMatrixs) {
+                        newPosition = {0, 0};
+                        teleport(matrix, matrixIndex, *matrixIndex + 1, lines,
+                                 columns);
+                    }
+
                 } else {
                     newPosition = {line + 1, column - 1};
                 }
@@ -170,7 +264,13 @@ pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
             case 7:
                 if (line + 1 > (lines - 1)) {
                     // Limite da matriz
-                    return randomMove(matrix, line, column, lines, columns);
+
+                    if (*matrixIndex + 1 <= numberOfMatrixs) {
+                        newPosition = {0, 0};
+                        teleport(matrix, matrixIndex, *matrixIndex + 1, lines,
+                                 columns);
+                    }
+
                 } else {
                     newPosition = {line + 1, column};
                 }
@@ -179,7 +279,13 @@ pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
             case 8:
                 if (line + 1 > (lines - 1) || column + 1 > (columns - 1)) {
                     // Limite da matriz
-                    return randomMove(matrix, line, column, lines, columns);
+
+                    if (*matrixIndex + 1 <= numberOfMatrixs) {
+                        newPosition = {0, 0};
+                        teleport(matrix, matrixIndex, *matrixIndex + 1, lines,
+                                 columns);
+                    }
+
                 } else {
                     newPosition = {line + 1, column + 1};
                 }
@@ -187,7 +293,13 @@ pair<int, int> randomMove(vector<vector<string>> matrix, int line, int column,
                 break;
         }
 
-    } while (matrix[newPosition.first][newPosition.second] == "#");
+        isSamePosition =
+            (newPosition.first == line) && (newPosition.second == column);
+
+        isPositionBlock =
+            (*matrix)[newPosition.first][newPosition.second] == "#";
+
+    } while (isSamePosition || isPositionBlock);
 
     return newPosition;
 }
@@ -209,7 +321,7 @@ int main() {
     // Play
 
     pair<int, int> startPosition = {0, 0};
-    int initialMatrix = 1;
+    int matrixIndex = 1;
 
     int life = 10;
     int bag = 0;
@@ -218,21 +330,17 @@ int main() {
     int column = startPosition.second;
 
     vector<vector<string>> matrix;
-    matrix = loadMatrixFromFile(initialMatrix, lines, columns);
-
-    show(matrix, lines, columns);
+    matrix = loadMatrixFromFile(matrixIndex, lines, columns);
 
     while (life > 0) {
         pair<int, int> nextMove =
-            randomMove(matrix, line, column, lines, columns);
-
-        // dbg(nextMove.first);
-        // dbg(nextMove.second);
+            randomMove(&matrix, line, column, lines, columns, &matrixIndex,
+                       numberOfMatrixs);
 
         line = nextMove.first;
         column = nextMove.second;
 
-        cout << line << column << " ";
+        cout << matrixIndex << " " << line << column << " " << endl;
 
         // if (line == startPosition.first && column == startPosition.second &&
         //            bag == 0) {
@@ -244,7 +352,6 @@ int main() {
 
         if (position == "*") {
             // Perigo
-
             life--;
         } else {
             // Como a função randomMove não retorna uma posição que seja
@@ -265,8 +372,6 @@ int main() {
             }
         }
     }
-cout << endl;
-    show(matrix, lines, columns);
 
     return 0;
 }
