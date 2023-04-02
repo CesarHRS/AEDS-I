@@ -3,7 +3,9 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <set>
 #include <vector>
+
 #define dbg(x) cout << #x << " = " << x << endl
 
 using namespace std;
@@ -43,8 +45,9 @@ void saveMatrixOnFile(vector<vector<string>> matrix, int matrixIndex, int lines,
     matrixFile.close();
 }
 
-void saveAllMatrixOnSeparateFiles(ifstream* file, int numberOfMatrixs,
-                                  int lines, int columns) {
+void saveAllMatrixOnSeparateFiles(
+    ifstream* file, vector<vector<pair<int, int>>>* validPositions,
+    int numberOfMatrixs, int lines, int columns) {
     for (int i = 0; i < numberOfMatrixs; i++) {
         fstream matrixFile;
 
@@ -56,6 +59,10 @@ void saveAllMatrixOnSeparateFiles(ifstream* file, int numberOfMatrixs,
                 string s;
                 *file >> s;
                 matrixFile << s << " ";
+
+                if (s != "#") {
+                    (*validPositions)[i].push_back({j, k});
+                }
             }
 
             matrixFile << endl;
@@ -116,15 +123,10 @@ void teleport(vector<vector<string>>* matrix, int* matrixIndex,
     *matrix = loadMatrixFromFile(*matrixIndex, lines, columns);
 }
 
-pair<int, int> randomValidMove(vector<vector<string>>* matrix, int line,
-                               int column, int lines, int columns,
-                               int* matrixIndex, int numberOfMatrixs) {
-    int move = randomInteger(1, 8);
-}
-
 pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
                           int lines, int columns, int* matrixIndex,
-                          int numberOfMatrixs) {
+                          int numberOfMatrixs,
+                          vector<vector<pair<int, int>>>* validPositions) {
     // TODO
 
     // 1 - Diagonal superior esquerda
@@ -171,15 +173,11 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
                         teleport(matrix, matrixIndex, *matrixIndex - 1, lines,
                                  columns);
 
-                        int l = randomInteger(0, lines - 1);
-                        int c = randomInteger(0, columns - 1);
+                        int index = randomInteger(
+                            0, (*validPositions)[*matrixIndex - 1].size() - 1);
 
-                        while ((*matrix)[l][c] != "#") {
-                            l = randomInteger(0, lines - 1);
-                            c = randomInteger(0, columns - 1);
-                        }
-
-                        newPosition = {l, c};
+                        newPosition =
+                            (*validPositions)[*matrixIndex - 1][index];
                     }
 
                 } else {
@@ -195,6 +193,11 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
                         newPosition = {0, 0};
                         teleport(matrix, matrixIndex, *matrixIndex - 1, lines,
                                  columns);
+                        int index = randomInteger(
+                            0, (*validPositions)[*matrixIndex - 1].size() - 1);
+
+                        newPosition =
+                            (*validPositions)[*matrixIndex - 1][index];
                     }
                 } else {
                     newPosition = {line - 1, column};
@@ -209,6 +212,11 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
                         newPosition = {0, 0};
                         teleport(matrix, matrixIndex, *matrixIndex - 1, lines,
                                  columns);
+                        int index = randomInteger(
+                            0, (*validPositions)[*matrixIndex - 1].size() - 1);
+
+                        newPosition =
+                            (*validPositions)[*matrixIndex - 1][index];
                     }
                 } else {
                     newPosition = {line - 1, column + 1};
@@ -223,6 +231,11 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
                         newPosition = {0, 0};
                         teleport(matrix, matrixIndex, *matrixIndex - 1, lines,
                                  columns);
+                        int index = randomInteger(
+                            0, (*validPositions)[*matrixIndex - 1].size() - 1);
+
+                        newPosition =
+                            (*validPositions)[*matrixIndex - 1][index];
                     }
                 } else {
                     newPosition = {line, column - 1};
@@ -238,6 +251,11 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
                         newPosition = {0, 0};
                         teleport(matrix, matrixIndex, *matrixIndex + 1, lines,
                                  columns);
+                        int index = randomInteger(
+                            0, (*validPositions)[*matrixIndex - 1].size() - 1);
+
+                        newPosition =
+                            (*validPositions)[*matrixIndex - 1][index];
                     }
 
                 } else {
@@ -254,6 +272,11 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
                         newPosition = {0, 0};
                         teleport(matrix, matrixIndex, *matrixIndex + 1, lines,
                                  columns);
+                        int index = randomInteger(
+                            0, (*validPositions)[*matrixIndex - 1].size() - 1);
+
+                        newPosition =
+                            (*validPositions)[*matrixIndex - 1][index];
                     }
 
                 } else {
@@ -269,6 +292,11 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
                         newPosition = {0, 0};
                         teleport(matrix, matrixIndex, *matrixIndex + 1, lines,
                                  columns);
+                        int index = randomInteger(
+                            0, (*validPositions)[*matrixIndex - 1].size() - 1);
+
+                        newPosition =
+                            (*validPositions)[*matrixIndex - 1][index];
                     }
 
                 } else {
@@ -284,6 +312,11 @@ pair<int, int> randomMove(vector<vector<string>>* matrix, int line, int column,
                         newPosition = {0, 0};
                         teleport(matrix, matrixIndex, *matrixIndex + 1, lines,
                                  columns);
+                        int index = randomInteger(
+                            0, (*validPositions)[*matrixIndex - 1].size() - 1);
+
+                        newPosition =
+                            (*validPositions)[*matrixIndex - 1][index];
                     }
 
                 } else {
@@ -314,7 +347,11 @@ int main() {
     int numberOfMatrixs;
     readNumberOfMatrixsFromFile(&file, &numberOfMatrixs);
 
-    saveAllMatrixOnSeparateFiles(&file, numberOfMatrixs, lines, columns);
+    vector<vector<pair<int, int>>> validPositions(numberOfMatrixs);
+    vector<set<pair<int, int>>> exploitedPositions(numberOfMatrixs);
+
+    saveAllMatrixOnSeparateFiles(&file, &validPositions, numberOfMatrixs, lines,
+                                 columns);
 
     file.close();
 
@@ -329,16 +366,20 @@ int main() {
     int line = startPosition.first;
     int column = startPosition.second;
 
+    exploitedPositions[matrixIndex - 1].insert({line, column});
+
     vector<vector<string>> matrix;
     matrix = loadMatrixFromFile(matrixIndex, lines, columns);
 
     while (life > 0) {
         pair<int, int> nextMove =
             randomMove(&matrix, line, column, lines, columns, &matrixIndex,
-                       numberOfMatrixs);
+                       numberOfMatrixs, &validPositions);
 
         line = nextMove.first;
         column = nextMove.second;
+
+        exploitedPositions[matrixIndex - 1].insert({line, column});
 
         cout << matrixIndex << " " << line << column << " " << endl;
 
@@ -371,6 +412,26 @@ int main() {
                 }
             }
         }
+    }
+
+    cout << endl << "Valid Postitions" << endl;
+
+    for (auto positions : validPositions) {
+        cout << positions.size() << " ";
+        for (auto position : positions) {
+            cout << position.first << position.second << " ";
+        }
+        cout << endl;
+    }
+
+    cout << endl << "Exploited Postitions" << endl;
+
+    for (auto positions : exploitedPositions) {
+        cout << positions.size() << " ";
+        for (auto position : positions) {
+            cout << position.first << position.second << " ";
+        }
+        cout << endl;
     }
 
     return 0;
